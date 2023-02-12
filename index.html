@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Image Generation Website</title>
+  <style>
+    /* Add some basic CSS styles */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #F7F7F7;
+    }
+
+    h1 {
+      color: #4D4D4D;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .container {
+      width: 80%;
+      margin: 0 auto;
+    }
+
+    form {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    textarea {
+      width: 800px;
+      height: 40px;
+      padding: 0px;
+      margin-right: 20px;
+      font-size: 16px;
+    }
+
+    input[type="submit"] {
+      width: 200px;
+      height: 40px;
+      padding: 0 20px;
+      background-color: #4D4D4D;
+      color: #FFFFFF;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .image-container {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    img {
+      max-width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <center>
+        <img class="logo" src="https://i.ibb.co/P6Lr2HF/curie-logo.png" alt="Logo" style="margin-bottom: 30px;">
+    </center>
+    <form action="http://localhost:8000/generate" method="post">
+        <textarea placeholder="Enter your text here" id="text-input"></textarea>
+        <input type="submit" value="Generate Image">
+    </form>
+      
+    <script>
+        // Add an event listener to the form submit event
+        document.querySelector("form").addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        // Get the value of the text input
+        let text = document.querySelector("#text-input").value;
+
+        // Make a POST request to the API endpoint with the text as JSON data in the request body
+        fetch("http://localhost:8000/generate", {
+            method: "POST",
+            headers: {
+            "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ text: text })
+        })
+        .then(response => {
+            if (response.ok) {
+            return response.json();
+            } else {
+            throw new Error('Failed to generate image');
+            }
+        })
+        .then(data => {
+            // Update the image source with the generated image
+            document.querySelector("img").src = "data:image/jpeg;base64," + data.image;
+        })
+        .catch(error => {
+            console.error(error);
+        });
+    });
+    </script>
+      
+    <div class="image-container">
+      <img src="" alt="Generated Image">
+    </div>
+  </div>
+</body>
+</html>
