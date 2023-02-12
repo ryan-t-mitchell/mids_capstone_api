@@ -63,43 +63,9 @@
         <img class="logo" src="https://i.ibb.co/P6Lr2HF/curie-logo.png" alt="Logo" style="margin-bottom: 30px;">
     </center>
     <form action="http://localhost:8000/generate" method="post">
-        <textarea placeholder="Enter your text here" id="text-input"></textarea>
+        <textarea placeholder="Enter your text here" id="text-input" name="text"></textarea>
         <input type="submit" value="Generate Image">
-    </form>
-      
-    <script>
-        // Add an event listener to the form submit event
-        document.querySelector("form").addEventListener("submit", function(event) {
-        event.preventDefault();
-
-        // Get the value of the text input
-        let text = document.querySelector("#text-input").value;
-
-        // Make a POST request to the API endpoint with the text as JSON data in the request body
-        fetch("http://localhost:8000/generate", {
-            method: "POST",
-            headers: {
-            "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ text: text })
-        })
-        .then(response => {
-            if (response.ok) {
-            return response.json();
-            } else {
-            throw new Error('Failed to generate image');
-            }
-        })
-        .then(data => {
-            // Update the image source with the generated image
-            document.querySelector("img").src = "data:image/jpeg;base64," + data.image;
-        })
-        .catch(error => {
-            console.error(error);
-        });
-    });
-    </script>
-      
+    </form>  
     <div class="image-container">
       <img src="" alt="Generated Image">
     </div>
