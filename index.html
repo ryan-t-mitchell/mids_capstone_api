@@ -62,13 +62,16 @@
     <center>
         <img class="logo" src="https://i.ibb.co/P6Lr2HF/curie-logo.png" alt="Logo" style="margin-bottom: 30px;">
     </center>
-    <form action="http://localhost:8000/generate" method="post">
+    <form>
         <textarea placeholder="Enter your text here" id="text-input" name="text"></textarea>
-        <input type="submit" value="Generate Image">
-    </form>  
-    <div class="image-container">
-      <img src="" alt="Generated Image">
+        <input type="submit" value="Generate Image" onclick="generateAndDisplayImage(event)">
+    </form>
+    <div id="image-container">
+      <img id="generated-image" alt="Generated Image">
+      <!-- <img id="generated-image" src="data:image/png;base64,{{ img_data }}"> -->
     </div>
   </div>
 </body>
+<!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
+<script src="app.js"></script>  
 </html>

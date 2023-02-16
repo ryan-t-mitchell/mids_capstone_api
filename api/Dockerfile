@@ -44,10 +44,11 @@ ENV PATH /usr/app/api/bin:${PATH}
 
 # Add in the main.py and model files into this working directory
 COPY /src/main.py ./
-COPY ../pipeline.pkl ./
+COPY /src/image.png ./
+#COPY ../pipeline.pkl ./
 
 # Introduce health check for container status based on some commands passed to python
-HEALTHCHECK --start-period=10s CMD python -c "import requests; requests.get('http://localhost:8000', timeout = 2)"
+HEALTHCHECK --start-period=60s CMD python -c "import requests; requests.get('http://localhost:8000/health', timeout = 2)"
 
 # Start uvicorn and run the app
 CMD ["uvicorn", "main:app", "--reload", "--host", "0.0.0.0"]
