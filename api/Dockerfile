@@ -32,6 +32,8 @@ FROM python:3.10-slim-buster as prod
 RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
+# Expose port 443 (default for HTTPS) when deploying this container to cloud (EC2)
+EXPOSE 443
 
 # Establish a working directory
 WORKDIR /usr/app
@@ -44,11 +46,15 @@ ENV PATH /usr/app/api/bin:${PATH}
 
 # Add in the main.py and model files into this working directory
 COPY /src/main.py ./
-COPY /src/image.png ./
+#COPY /src/image.png ./
 #COPY ../pipeline.pkl ./
 
 # Introduce health check for container status based on some commands passed to python
-HEALTHCHECK --start-period=60s CMD python -c "import requests; requests.get('http://localhost:8000/health', timeout = 2)"
+# HEALTHCHECK --start-period=60s CMD python -c "import requests; requests.get('http://localhost:8000/health', timeout = 2)"
+HEALTHCHECK --start-period=60s CMD python -c "import requests; requests.get('http://localhost:443/health', timeout = 2)"
 
 # Start uvicorn and run the app
-CMD ["uvicorn", "main:app", "--reload", "--host", "0.0.0.0"]
+# CMD ["uvicorn", "main:app", "--reload", "--host", "0.0.0.0"]
+
+# Start uvicorn and run the app on port 443
+CMD ["uvicorn", "main:app", "--reload", "--host", "0.0.0.0", "--port", "443"]

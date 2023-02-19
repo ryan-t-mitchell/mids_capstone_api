@@ -15,6 +15,11 @@ from pydantic import BaseModel
 from io import BytesIO
 from PIL import Image
 
+# Enable GPU if available
+if torch.cuda.is_available():
+    device = "cuda"
+else:
+    device = "cpu"
 
 logger = logging.getLogger(__name__)
 
@@ -48,21 +53,30 @@ async def datetime():
 def read_name(name: str):
     return "hello {}".format(name)
 
-
 pipeline = DiffusionPipeline.from_pretrained("runwayml/stable-diffusion-v1-5")
+pipeline = pipeline.to("cuda")
 
-
+logger.info("Device: {}".format(device))
 # # Load model pipeline
 # with open("./pipeline.pkl", "rb") as f:
 #     pipeline = pickle.load(f)
 
 #pipeline = joblib.load("./pipeline.pkl")
 
-# @app.post("/generate")
-# async def text_to_image(text: str = Form()): #added after reading https://fastapi.tiangolo.com/tutorial/request-forms/
-#     logger.info("Received POST request with text: {}".format(text))
-#     generated_image = pipeline(text).images[0]
-#     return {"image": generated_image}
+# Allow POST requests from the hosted site!
+
+origins = [
+    "*",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 logger.info("Got to options_handler")
 @app.options("/generate")
@@ -83,13 +97,9 @@ async def text_to_image(model: Model):# = Form()):
     logger.info("Received POST request with text: {}".format(model.text))
     generated_image = pipeline(model.text).images[0]
     logger.info("Type of image being generated: {}".format(type(generated_image)))
-    # use a static image to see if it is even sending it to the page
-    #generated_image = Image.open("image.png")
-    #logger.info("Type of image being generated: {}".format(type(generated_image)))
     buffer = BytesIO()
     generated_image.save(buffer, format="PNG") # Save the image to a buffer
     img_str = base64.b64encode(buffer.getvalue()) # Convert the buffer to base64-encoded binary data
-    # is image/png the right type to return?
     return Response(content=img_str.decode('utf-8'), media_type="image/png", headers={"Access-Control-Allow-Origin": "*"}) 
 
     # Can we just host the image that is generated automatically? And then load the src in the HTML?
