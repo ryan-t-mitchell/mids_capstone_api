@@ -6,7 +6,6 @@
     /* Add some basic CSS styles */
     body {
       font-family: Arial, sans-serif;
-      background-color: #F7F7F7;
     }
 
     h1 {
@@ -47,22 +46,13 @@
       text-align: center;
     }
 
-    .image-container {
-      margin-top: 20px;
-      text-align: center;
+    #image-container {
       display: flex;
       justify-content: center;
       align-items: center;
       height: calc(100vh - 200px);
-      margin-left: auto;
-      margin-right: auto;
+      margin-top: -150px;
     }
-
-    /* img {
-      max-width: 100%;
-      max-height: 100%;
-      margin-top: 30px;
-    } */
 
     img {
       max-width: 100%;
@@ -71,21 +61,47 @@
       display: inline-block;
     }
 
+    /* Add styles for the background video */
+    #background-video {
+      position: fixed;
+      right: 0;
+      bottom: 0;
+      min-width: 100%;
+      min-height: 100%;
+      z-index: -1;
+    }
+
+    .logo {
+      filter: invert(1);
+    }
+
+    #loading-spinner {
+      display: none;
+      width: 220px;
+      height: 180px;
+      margin-left: -90px;
+      margin-top: 0px;
+    }
+
   </style>
 </head>
 <body>
+    <video id="background-video" autoplay loop muted playsinline>
+      <source src="animated_bg.mp4" type="video/mp4">
+    </video>
   <div class="container">
     <center>
         <img class="logo" src="https://i.ibb.co/P6Lr2HF/curie-logo.png" alt="Logo" style="margin-bottom: 30px;">
     </center>
     <form>
         <textarea placeholder="Enter your text here" id="text-input" name="text"></textarea>
-        <input type="submit" value="Generate Image" onclick="generateAndDisplayImage(event);return false">
+        <input type="submit" value="Generate Image" id="generate-image-button" onclick="generateAndDisplayImage(event);return false">
+        <img id="loading-spinner" src="loading.gif" alt="Loading...">
     </form>
     <div id="image-container">
-      <img id="generated-image" alt="Generated Image">
+      <img id="generated-image">
     </div>
   </div>
+  <script src="app.js"></script>
 </body>
-<script src="app.js"></script>  
 </html>
